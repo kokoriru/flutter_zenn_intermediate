@@ -1,6 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'dummy.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,39 +28,48 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      print('call setState');
-    });
-    nextpage();
-  }
-
-  // ダミーで画面遷移を行う
-  void nextpage() async {{
-    await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return DummyPage();
-    }));
-  }}
-
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void initState() {
-    print('call initState');
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
-  void didChangeDependencies() {
-    print('call didChangeDependencies');
-    super.didChangeDependencies();
+  void dispose() {
+    print('dispose');
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state = $state');
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print('非アクティブになったときの処理');
+        break;
+      case AppLifecycleState.paused:
+        print('停止されたときの処理');
+        break;
+      case AppLifecycleState.resumed:
+        print('再開されたときの処理');
+        break;
+      case AppLifecycleState.detached:
+        print('破棄されたときの処理');
+        break;
+    }
+  }
+
+  int _counter = 0;
+  _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('call build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -75,36 +83,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              key: Key('counter'),
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key('increment'),
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    print('call didUpdateWidget');
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void deactivate() {
-    print('call deactive');
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    print('call dispose');
-    super.dispose();
   }
 }

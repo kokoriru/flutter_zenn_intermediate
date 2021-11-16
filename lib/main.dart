@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'business_logic.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,43 +32,36 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  int _counter = 0;
+  var intStream = StreamController<int>();
+  var stringStream = StreamController<String>();
+  var generator = new Generator();
+  var coordinator = new Coordinator();
+  var consumer = new Consumer();
+
+  void _incrementCounter() {
+    generator.generate();
+    setState(() {
+      _counter++;
+    });
+  }
+
   @override
   void initState() {
+    generator.init(intStream);
+    coordinator.init(intStream, stringStream);
+    consumer.init(stringStream);
+    coordinator.coordinate();
+    consumer.consume();
+
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
-    print('dispose');
-    WidgetsBinding.instance!.removeObserver(this);
+    intStream.close();
+    stringStream.close();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state = $state');
-    switch (state) {
-      case AppLifecycleState.inactive:
-        print('非アクティブになったときの処理');
-        break;
-      case AppLifecycleState.paused:
-        print('停止されたときの処理');
-        break;
-      case AppLifecycleState.resumed:
-        print('再開されたときの処理');
-        break;
-      case AppLifecycleState.detached:
-        print('破棄されたときの処理');
-        break;
-    }
-  }
-
-  int _counter = 0;
-  _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'null_sample.dart';
+import 'dummy.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,13 +35,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      _counter++;
+      print('call setState');
     });
-    NullSample().method2();
+    nextpage();
+  }
+
+  // ダミーで画面遷移を行う
+  void nextpage() async {{
+    await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return DummyPage();
+    }));
+  }}
+
+  @override
+  void initState() {
+    print('call initState');
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('call didChangeDependencies');
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('call build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -55,16 +75,36 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
+              key: Key('counter'),
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('increment'),
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    print('call didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void deactivate() {
+    print('call deactive');
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print('call dispose');
+    super.dispose();
   }
 }

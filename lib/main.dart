@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-    NullSample().method1();
+    NullSample().method2();
   }
 
   @override

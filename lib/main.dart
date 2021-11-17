@@ -94,6 +94,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 );
               },
             ),
+            Text(
+              L10n.of(context)!.hello("kokoriru"),
+            ),
+            Text(
+              L10n.of(context)!.allow,
+            ),
+            Text(
+              L10n.of(context)!.deny,
+            ),
           ],
         ),
       ),
